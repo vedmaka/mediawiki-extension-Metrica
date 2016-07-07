@@ -39,7 +39,7 @@ class MetricaEntry {
 		'page_namespace_id' => 0,
 		'page_is_main'      => 0,
 		'created_at'        => 0,
-		'created_at_date'   => null
+		//'created_at_date'   => null
 	);
 
 	protected $id = null;

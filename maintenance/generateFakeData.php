@@ -53,7 +53,10 @@ class MetricaFakeDataGenerator extends Maintenance {
 
 				for( $item = 0; $item < $items; $item++ ) {
 
-					$entry = new MetricaEntry();
+					$entry = new MetricaEntry(array(
+						'created_at' => $date->getTimestamp(),
+						'created_at_date' => $date->format("Y-m-d H:i:s")
+					));
 
 					$entry->action              = $this->randomize('view', 'edit');
 					$entry->user_id             = mt_rand(0, 100);
@@ -68,8 +71,6 @@ class MetricaFakeDataGenerator extends Maintenance {
 					$entry->page_categories     = $this->randomize('', 'Category 1;Category 2');
 					$entry->page_namespace_id   = 0;
 					$entry->page_is_main        = 0;
-					$entry->created_at          = $date->getTimestamp();
-					$entry->created_at_date     = $date->format("Y-m-d H:i:s");
 
 					$entry->save();
 
