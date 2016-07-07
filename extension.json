@@ -1,0 +1,79 @@
+{
+    "name": "Metrica",
+    "version": "0.0.1",
+    "author": [
+        "Jon Anderton"
+    ],
+    "url": "https://www.mediawiki.org/wiki/Extension:Metrica",
+    "descriptionmsg": "metrica-desc",
+    "license-name": "MIT",
+    "type": "other",
+    "AutoloadClasses": {
+        "Metrica": "Metrica.class.php",
+        "MetricaHooks": "Metrica.hooks.php",
+        "SpecialMetrica": "specials/SpecialMetrica.php",
+        "MetricaAPI": "includes/MetricaAPI.class.php",
+        "MetricaStatAPI": "includes/MetricaStatAPI.class.php",
+        "MetricaEntry": "includes/MetricaEntry.class.php"
+    },
+    "config": {
+        "MetricaExcludeSpecials": true
+    },
+    "callback": "MetricaHooks::onExtensionLoad",
+    "ExtensionMessagesFiles": {
+        "MetricaAlias": "Metrica.i18n.alias.php"
+    },
+    "Hooks": {
+        "BeforePageDisplay": [
+            "MetricaHooks::onBeforePageDisplay"
+        ],
+        "LoadExtensionSchemaUpdates": [
+            "MetricaHooks::onLoadExtensionSchemaUpdates"
+        ],
+        "ResourceLoaderGetConfigVars": [
+            "MetricaHooks::onResourceLoaderGetConfigVars"
+        ]
+    },
+    "MessagesDirs": {
+        "Metrica": [
+            "i18n"
+        ]
+    },
+    "ResourceModules": {
+        "ext.metrica.foo": {
+            "scripts": [
+                "modules/ext.Metrica.foo.js",
+                "modules/ext.Metrica.js"
+            ],
+            "styles": [
+                "modules/ext.Metrica.foo.css"
+            ]
+        },
+        "ext.metrica.special": {
+            "scripts": [
+                "modules/lib/Chart.bundle.min.js",
+                "modules/ext.Metrica.special.js"
+            ],
+            "styles": [
+                "modules/ext.Metrica.special.css"
+            ],
+            "position": "bottom"
+        }
+    },
+    "ResourceFileModulePaths": {
+        "localBasePath": "",
+        "remoteExtPath": "Metrica"
+    },
+    "SpecialPages": {
+        "Metrica": "SpecialMetrica"
+    },
+    "APIModules": {
+        "metrica": "MetricaAPI",
+        "metricastat": "MetricaStatAPI"
+    },
+    "GroupPermissions": {
+        "sysop": {
+            "metrica": true
+        }
+    }
+}

@@ -1,0 +1,17 @@
+#metrica-dashboard .panel-with-graph .panel-body {
+    padding: 10px 0;
+    /*box-sizing: initial;
+    padding: 20px;*/
+}
+
+#metrica-dashboard div.row {
+    margin-top: 0;
+}
+
+#metrica-dashboard .panel-body ul {
+    margin: 0;
+}
+
+#metrica-dashboard .panel-body ul li .badge {
+    margin-left: 8px;
+}

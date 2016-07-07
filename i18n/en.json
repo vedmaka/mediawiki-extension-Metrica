@@ -1,0 +1,7 @@
+{
+  "@metadata": {
+    "authors": []
+  },
+  "metrica-desc": "This is an example extension",
+  "metrica-i18n-welcome": "Welcome to the localization file of the Metrica extension."
+}

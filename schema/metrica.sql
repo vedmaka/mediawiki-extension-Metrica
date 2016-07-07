@@ -1,0 +1,20 @@
+CREATE TABLE /*_*/metrica (
+  action varchar(100) NOT NULL,
+  user_id int(11) DEFAULT 0,
+  user_ip VARCHAR(100) DEFAULT '',
+  user_logged_in int(1) DEFAULT 0,
+  user_lang varchar(20) DEFAULT NULL,
+  user_name varchar(100) DEFAULT NULL,
+  page_id int(11) DEFAULT NULL,
+  page_revision_id int(11) DEFAULT NULL,
+  page_is_article int(1) DEFAULT 0,
+  page_name varchar(500) DEFAULT NULL,
+  page_categories varchar(1000) DEFAULT NULL,
+  page_namespace_id int(11) DEFAULT NULL,
+  page_is_main int(1) DEFAULT 0,
+  id int(11) NOT NULL AUTO_INCREMENT,
+  created_at int(11) DEFAULT NULL,
+  created_at_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  INDEX action (action)
+) /*$wgDbTableOptions*/;
