@@ -21,6 +21,7 @@ class SpecialMetrica extends SpecialPage
      */
     public function execute( $sub )
     {
+
         $out = $this->getOutput();
 
 	    if( !$this->getUser()->isAllowed('metrica') ) {
@@ -28,6 +29,9 @@ class SpecialMetrica extends SpecialPage
 	    }
 
 	    $out->addModules('ext.metrica.special');
+	    if( $out->getSkin()->getSkinName() !== 'bootstrapskin' ) {
+	    	$out->addModules('ext.metrica.placeholder');
+	    }
 
         $out->setPageTitle("Metrica Overview");
 

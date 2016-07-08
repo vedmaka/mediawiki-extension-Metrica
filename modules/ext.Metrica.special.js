@@ -53,7 +53,8 @@ $(function(){
                 scales: {
                     yAxes: [{
                         ticks: {
-                            min: 0
+                            min: 0/*,
+                            stepSize: 1*/
                         }
                     }]
                 }
@@ -108,7 +109,8 @@ $(function(){
                 scales: {
                     yAxes: [{
                         ticks: {
-                            min: 0
+                            min: 0/*,
+                            stepSize: 1*/
                         }
                     }]
                 }

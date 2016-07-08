@@ -58,6 +58,11 @@
                 "modules/ext.Metrica.special.css"
             ],
             "position": "bottom"
+        },
+        "ext.metrica.placeholder": {
+            "styles": [
+                "modules/ext.Metrica.bootstrap-placeholder.css"
+            ]
         }
     },
     "ResourceFileModulePaths": {

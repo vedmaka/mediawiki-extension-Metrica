@@ -1,0 +1,109 @@
+#metrica-dashboard *, #metrica-dashboard *:before {
+    box-sizing: border-box;
+}
+
+#metrica-dashboard ul {
+    padding-left: 40px;
+}
+
+.row {
+    margin-left: -15px;
+    margin-right: -15px;
+    box-sizing: border-box;
+}
+
+.row::before, .panel-body::before {
+    content: " ";
+    display: table;
+    box-sizing: border-box;
+}
+
+.row::after, .panel-body::after {
+    clear: both;
+    content: " ";
+    display: table;
+}
+
+.col-md-6 {
+    width: 50%;
+    float: left;
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.panel.panel-default .panel-heading > .panel-title {
+    font-size: 24px;
+}
+.panel-default .panel-heading > .panel-title {
+    font-size: 24px;
+}
+.panel-title {
+    font-size: 24px;
+}
+.panel-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 18px;
+    color: inherit;
+}
+
+.panel {
+    margin-bottom: 20px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 0;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.panel.panel-default {
+    box-shadow: none;
+    border-color: transparent;
+}
+
+.panel.panel-default .panel-heading {
+    color: #236b9b;
+    background-color: #ffffff;
+    border-bottom: 1px solid #236b9b;
+    box-shadow: 0 4px 0 0 #2c88c5;
+    margin-bottom: 4px;
+}
+.panel.panel-default > .panel-heading {
+    color: #236b9b;
+    background-color: #ffffff;
+    border-color: #236b9b;
+}
+.panel-default .panel-heading {
+    color: #236b9b;
+    background-color: #ffffff;
+    border-bottom: 1px solid #236b9b;
+    box-shadow: 0 4px 0 0 #2c88c5;
+    margin-bottom: 4px;
+}
+.panel-default > .panel-heading {
+    color: #236b9b;
+    background-color: #ffffff;
+    border-color: #236b9b;
+}
+.panel-heading {
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: -1;
+    border-top-left-radius: -1;
+}
+
+#metrica-dashboard .panel-with-graph .panel-body {
+    padding: 10px 0;
+}
+
+.panel.panel-default .panel-body {
+    background-color: #fff;
+}
+.panel-default .panel-body {
+    background-color: #fff;
+}
+.panel-body {
+    padding: 15px;
+}

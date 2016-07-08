@@ -38,8 +38,7 @@ class MetricaEntry {
 		'page_categories'   => '',
 		'page_namespace_id' => 0,
 		'page_is_main'      => 0,
-		'created_at'        => 0,
-		//'created_at_date'   => null
+		'created_at'        => 0
 	);
 
 	protected $id = null;
@@ -69,6 +68,11 @@ class MetricaEntry {
 	public function __set( $name, $value ) {
 		if( array_key_exists( $name, $this->fields ) ) {
 			$this->fields[ $name ] = $value;
+		}else{
+			// Bypass check for these fields
+			if( $name == 'created_at' || $name == 'created_at_date' ) {
+				$this->fields[ $name ] = $value;
+			}
 		}
 		return false;
 	}
