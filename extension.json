@@ -52,9 +52,11 @@
         "ext.metrica.special": {
             "scripts": [
                 "modules/lib/Chart.bundle.min.js",
+                "modules/lib/pikaday.js",
                 "modules/ext.Metrica.special.js"
             ],
             "styles": [
+                "modules/lib/pikaday.css",
                 "modules/ext.Metrica.special.css"
             ],
             "position": "bottom"

@@ -15,3 +15,13 @@
 #metrica-dashboard .panel-body ul li .badge {
     margin-left: 8px;
 }
+
+#metrica-dashboard #pik {
+    overflow: hidden;
+    position: relative;
+    margin: 0 15px;
+}
+
+#metrica-dashboard .pika-lendar {
+    min-height: 215px;
+}

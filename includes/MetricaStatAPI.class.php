@@ -2,6 +2,8 @@
 
 
 class MetricaStatAPI extends ApiBase {
+	
+	private $params;
 
 	public function execute() {
 
@@ -9,8 +11,8 @@ class MetricaStatAPI extends ApiBase {
 			$this->dieUsage('Not enough permissions', 'no_permissions');
 		}
 
-		$params = $this->extractRequestParams();
-		switch ($params['do']) {
+		$this->params = $this->extractRequestParams();
+		switch ($this->params['do']) {
 			case 'page_views':
 				$this->pageViews();
 				break;
@@ -30,13 +32,19 @@ class MetricaStatAPI extends ApiBase {
 	private function pageMostViewed() {
 
 		$data = array();
+		
+		$conditions = array(
+			'action' => 'view'
+		);
+		
+		if( $this->params['range_unix'] ) {
+			$conditions[] = 'created_at <= '.$this->params['range_unix'];
+		}
 
 		$items = wfGetDB(DB_SLAVE)->select(
 			'metrica',
 			'page_id, page_name, COUNT(*) as `count`',
-			array(
-				'action' => 'view'
-			),
+			$conditions,
 			__METHOD__,
 			array(
 				'GROUP BY' => 'page_id',
@@ -62,13 +70,19 @@ class MetricaStatAPI extends ApiBase {
 	private function pageMostEdited() {
 
 		$data = array();
+		
+		$conditions = array(
+			'action' => 'edit'
+		);
+		
+		if( $this->params['range_unix'] ) {
+			$conditions[] = 'created_at <= '.$this->params['range_unix'];
+		}
 
 		$items = wfGetDB(DB_SLAVE)->select(
 			'metrica',
 			'page_id, page_name, COUNT(*) as `count`',
-			array(
-				'action' => 'edit'
-			),
+			$conditions,
 			__METHOD__,
 			array(
 				'GROUP BY' => 'page_id',
@@ -97,14 +111,21 @@ class MetricaStatAPI extends ApiBase {
 
 		$lowDate = new DateTime();
 		$lowDate = $lowDate->sub( new DateInterval("P7D") );
+		
+		$conditions = array(
+			'action' => 'view'
+		);
+		
+		if( $this->params['range_unix'] ) {
+			$conditions[] = 'created_at >= '. ( (int)$this->params['range_unix'] - 60 * 60 * 24 * 7 );
+		}else{
+			$conditions[] = 'created_at >= '.$lowDate->getTimestamp();
+		}
 
 		$items = wfGetDB(DB_SLAVE)->select(
 			'metrica',
 			'COUNT(*) as `count`, DATE_FORMAT(created_at_date, "%e %M") as `date`',
-			array(
-				'action' => 'view',
-				'created_at >= '.$lowDate->getTimestamp()
-			),
+			$conditions,
 			__METHOD__,
 			array(
 				'GROUP BY' => 'DAY(created_at_date)'
@@ -168,6 +189,10 @@ class MetricaStatAPI extends ApiBase {
 			'do' => array(
 				ApiBase::PARAM_REQUIRED => true,
 				ApiBase::PARAM_TYPE => 'string'
+			),
+			'range_unix' => array(
+				ApiBase::PARAM_REQUIRED => false,
+				ApiBase::PARAM_TYPE => 'integer'
 			)
 		);
 	}

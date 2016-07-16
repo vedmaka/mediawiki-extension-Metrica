@@ -6,9 +6,35 @@ $(function(){
     Chart.defaults.global.elements.point.hitRadius = 15;
 
     var apiUrl = mw.config.get('wgServer') + mw.config.get('wgScriptPath') + '/api.php?action=metricastat&format=json';
+    
+    var viewsChart, editsChart, rangeUnix;
 
-    // Page views
-    $.get( apiUrl + '&do=page_views', function(response){
+    var pik = new Pikaday({
+        field: $('#pik_field').get(0),
+        bound: false,
+        container: $('#pik').get(0),
+        onSelect: function(date) {
+            $('#pik_field').val( pik.toString() );
+            var date = pik.getDate();
+            var unix = date.getTime() / 1000;
+            console.log(unix);
+            rangeUnix = unix;
+            redrawStatistics();
+        },
+        numberOfMonths: 3
+    });
+    
+    // A bit of refactoring
+    function redrawStatistics() {
+        //TODO: update all
+        drawViewsGraph();
+        drawEditsGraph();
+        drawViewsList();
+        drawEditsList();
+    }
+    
+    function drawViewsGraph() {
+        $.get( apiUrl + '&do=page_views' + (rangeUnix ? '&range_unix=' + rangeUnix : '') , function(response){
 
         var graphData = response.metricastat[0];
 
@@ -32,39 +58,45 @@ $(function(){
             ]
         };
 
-        var viewsChart = new Chart(viewsChartElement, {
-            type: 'line',
-            data: lineChartData,
-            options: {
-                title: {
-                    display: false
-                },
-                legend: {
-                    display: false
-                },
-                responsive: true,
-                tooltips: {
-                    callbacks: {
-                        label: function(t,d) {
-                            return t.yLabel + ' views';
+        if( viewsChart ) {
+            viewsChart.data = lineChartData;
+            viewsChart.update();
+            viewsChart.render();
+        }else{
+            viewsChart = new Chart(viewsChartElement, {
+                type: 'line',
+                data: lineChartData,
+                options: {
+                    title: {
+                        display: false
+                    },
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                    tooltips: {
+                        callbacks: {
+                            label: function(t,d) {
+                                return t.yLabel + ' views';
+                            }
                         }
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0/*,
+                                stepSize: 1*/
+                            }
+                        }]
                     }
-                },
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            min: 0/*,
-                            stepSize: 1*/
-                        }
-                    }]
                 }
-            }
-        });
-
+            });
+        }
     });
-
-    // Page edits
-    $.get( apiUrl + '&do=page_edits', function(response){
+    }
+    
+    function drawEditsGraph() {
+        $.get( apiUrl + '&do=page_edits' + (rangeUnix ? '&range_unix=' + rangeUnix : ''), function(response){
 
         var graphData = response.metricastat[0];
 
@@ -88,89 +120,99 @@ $(function(){
             ]
 
         };
-        var editsChart = new Chart(editsChartElement, {
-            type: 'line',
-            data: lineChartData,
-            options: {
-                title: {
-                    display: false
-                },
-                legend: {
-                    display: false
-                },
-                responsive: true,
-                tooltips: {
-                    callbacks: {
-                        label: function(t,d) {
-                            return t.yLabel + ' edits';
+        if( editsChart ) {
+            editsChart.data = lineChartData;
+            editsChart.update();
+        }else{
+            editsChart = new Chart(editsChartElement, {
+                type: 'line',
+                data: lineChartData,
+                options: {
+                    title: {
+                        display: false
+                    },
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                    tooltips: {
+                        callbacks: {
+                            label: function(t,d) {
+                                return t.yLabel + ' edits';
+                            }
                         }
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0/*,
+                                stepSize: 1*/
+                            }
+                        }]
                     }
-                },
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            min: 0/*,
-                            stepSize: 1*/
-                        }
-                    }]
                 }
+            });
+        }
+
+    });
+    }
+    
+    function drawViewsList() {
+        $.get( apiUrl + '&do=page_most_viewed' + (rangeUnix ? '&range_unix=' + rangeUnix : ''), function(response){
+
+            var graphData = response.metricastat[0];
+    
+            if( !graphData ) {
+                return true;
             }
+    
+            var $container = $('#most-viewed-pages');
+            var $ul = $('<ul/>');
+    
+            $.each(graphData, function(i,v){
+                var $li = $('<li/>');
+                var $span = $('<span/>');
+                $span.addClass('badge').addClass('badge-primary');
+                $span.html( v.views );
+                $li.html( v.link );
+                $li.append( $span );
+                $ul.append( $li );
+            });
+    
+            $container.html('');
+            $container.append( $ul );
+    
         });
+    }
+    
+    function drawEditsList() {
+        $.get( apiUrl + '&do=page_most_edited' + (rangeUnix ? '&range_unix=' + rangeUnix : ''), function(response){
 
-    });
+            var graphData = response.metricastat[0];
+    
+            if( !graphData ) {
+                return true;
+            }
+    
+            var $container = $('#most-edited-pages');
+            var $ul = $('<ul/>');
+    
+            $.each(graphData, function(i,v){
+                var $li = $('<li/>');
+                var $span = $('<span/>');
+                $span.addClass('badge').addClass('badge-primary');
+                $span.html( v.edits );
+                $li.html( v.link );
+                $li.append( $span );
+                $ul.append( $li );
+            });
+    
+            $container.html('');
+            $container.append( $ul );
 
-    // Most viewed pages
-    $.get( apiUrl + '&do=page_most_viewed', function(response){
-
-        var graphData = response.metricastat[0];
-
-        if( !graphData ) {
-            return true;
-        }
-
-        var $container = $('#most-viewed-pages');
-        var $ul = $('<ul/>');
-
-        $.each(graphData, function(i,v){
-            var $li = $('<li/>');
-            var $span = $('<span/>');
-            $span.addClass('badge').addClass('badge-primary');
-            $span.html( v.views );
-            $li.html( v.link );
-            $li.append( $span );
-            $ul.append( $li );
         });
-
-        $container.html('');
-        $container.append( $ul );
-
-    });
-
-    // Most edited pages
-    $.get( apiUrl + '&do=page_most_edited', function(response){
-
-        var graphData = response.metricastat[0];
-
-        if( !graphData ) {
-            return true;
-        }
-
-        var $container = $('#most-edited-pages');
-        var $ul = $('<ul/>');
-
-        $.each(graphData, function(i,v){
-            var $li = $('<li/>');
-            var $span = $('<span/>');
-            $span.addClass('badge').addClass('badge-primary');
-            $span.html( v.edits );
-            $li.html( v.link );
-            $li.append( $span );
-            $ul.append( $li );
-        });
-
-        $container.html('');
-        $container.append( $ul );
-
-    });
+    }
+    
+    redrawStatistics();
 
 });
