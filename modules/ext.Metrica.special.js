@@ -59,7 +59,8 @@ $(function(){
         };
 
         if( viewsChart ) {
-            viewsChart.data = lineChartData;
+            viewsChart.data.datasets[0] = lineChartData.datasets[0];
+            viewsChart.data.labels = lineChartData.labels;
             viewsChart.update();
             viewsChart.render();
         }else{

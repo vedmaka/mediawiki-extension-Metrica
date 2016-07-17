@@ -108,19 +108,21 @@ class MetricaStatAPI extends ApiBase {
 	private function pageViews() {
 
 		$data = array();
-
-		$lowDate = new DateTime();
-		$lowDate = $lowDate->sub( new DateInterval("P7D") );
 		
 		$conditions = array(
 			'action' => 'view'
 		);
-		
+
+		$lowDate = new DateTime();
+
 		if( $this->params['range_unix'] ) {
-			$conditions[] = 'created_at >= '. ( (int)$this->params['range_unix'] - 60 * 60 * 24 * 7 );
-		}else{
-			$conditions[] = 'created_at >= '.$lowDate->getTimestamp();
+			$lowDate->setTimestamp( (int)$this->params['range_unix'] );
+			$conditions[] = 'created_at <= '. (int)$this->params['range_unix'];
+		}else {
+			$lowDate = $lowDate->sub( new DateInterval( "P7D" ) );
 		}
+
+		$conditions[] = 'created_at >= '.$lowDate->getTimestamp();
 
 		$items = wfGetDB(DB_SLAVE)->select(
 			'metrica',
