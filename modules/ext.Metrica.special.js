@@ -7,7 +7,7 @@ $(function(){
 
     var apiUrl = mw.config.get('wgServer') + mw.config.get('wgScriptPath') + '/api.php?action=metricastat&format=json';
     
-    var viewsChart, editsChart, tsStart, tsEnd;
+    var viewsChart, editsChart, tsStart, tsEnd, excludePriv;
     var inputDateStart = $('#start_date');
     var inputDateEnd = $('#end_date');
 
@@ -47,6 +47,11 @@ $(function(){
        tsEnd = null;
        redrawStatistics();
     });
+
+    $('#check_exclude_admins').change(function(){
+        excludePriv = $(this).is(':checked');
+        redrawStatistics();
+    });
     
     // A bit of refactoring
     function redrawStatistics() {
@@ -66,6 +71,9 @@ $(function(){
             if( tsEnd ) {
                 str += '&end=' + tsEnd
             }
+        }
+        if( excludePriv ) {
+            str += '&exclude=true'
         }
         return str;
     }

@@ -45,6 +45,10 @@ class MetricaStatAPI extends ApiBase {
 			$conditions[] = 'created_at <= '.$this->params['end'];
 		}
 
+		if( $this->params['exclude'] ) {
+			$conditions[] = 'user_id NOT IN( SELECT user_id FROM '.wfGetDB(DB_SLAVE)->tablePrefix().'user_groups ug WHERE ug.ug_group = "sysop" )';
+		}
+
 		$items = wfGetDB(DB_SLAVE)->select(
 			'metrica',
 			'page_id, page_name, COUNT(*) as `count`',
@@ -85,6 +89,10 @@ class MetricaStatAPI extends ApiBase {
 		
 		if( $this->params['end'] ) {
 			$conditions[] = 'created_at <= '.$this->params['end'];
+		}
+
+		if( $this->params['exclude'] ) {
+			$conditions[] = 'user_id NOT IN( SELECT user_id FROM '.wfGetDB(DB_SLAVE)->tablePrefix().'user_groups ug WHERE ug.ug_group = "sysop" )';
 		}
 
 		$items = wfGetDB(DB_SLAVE)->select(
@@ -139,6 +147,10 @@ class MetricaStatAPI extends ApiBase {
 		
 		}
 
+		if( $this->params['exclude'] ) {
+			$conditions[] = 'user_id NOT IN( SELECT user_id FROM '.wfGetDB(DB_SLAVE)->tablePrefix().'user_groups ug WHERE ug.ug_group = "sysop" )';
+		}
+
 		$items = wfGetDB(DB_SLAVE)->select(
 			'metrica',
 			'COUNT(*) as `count`, DATE_FORMAT(created_at_date, "%e %M") as `date`',
@@ -191,6 +203,10 @@ class MetricaStatAPI extends ApiBase {
 		
 		}
 
+		if( $this->params['exclude'] ) {
+			$conditions[] = 'user_id NOT IN( SELECT user_id FROM '.wfGetDB(DB_SLAVE)->tablePrefix().'user_groups ug WHERE ug.ug_group = "sysop" )';
+		}
+
 		$items = wfGetDB(DB_SLAVE)->select(
 			'metrica',
 			'COUNT(*) as `count`, DATE_FORMAT(created_at_date, "%e %M") as `date`',
@@ -230,6 +246,10 @@ class MetricaStatAPI extends ApiBase {
 			'end' => array(
 				ApiBase::PARAM_REQUIRED => false,
 				ApiBase::PARAM_TYPE => 'integer'
+			),
+			'exclude' => array(
+				ApiBase::PARAM_REQUIRED => false,
+				ApiBase::PARAM_TYPE => 'string'
 			)
 		);
 	}
