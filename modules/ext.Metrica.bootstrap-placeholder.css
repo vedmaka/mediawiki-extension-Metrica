@@ -107,3 +107,8 @@
 .panel-body {
     padding: 15px;
 }
+
+#metrica-dashboard label[for="start_date"] {
+    margin-left: 20px;
+}
+

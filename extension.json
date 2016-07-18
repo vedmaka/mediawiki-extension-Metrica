@@ -52,6 +52,7 @@
         "ext.metrica.special": {
             "scripts": [
                 "modules/lib/Chart.bundle.min.js",
+                "modules/lib/moment.js",
                 "modules/lib/pikaday.js",
                 "modules/ext.Metrica.special.js"
             ],

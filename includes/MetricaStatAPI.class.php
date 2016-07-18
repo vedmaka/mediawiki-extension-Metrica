@@ -37,8 +37,12 @@ class MetricaStatAPI extends ApiBase {
 			'action' => 'view'
 		);
 		
-		if( $this->params['range_unix'] ) {
-			$conditions[] = 'created_at <= '.$this->params['range_unix'];
+		if( $this->params['start'] ) {
+			$conditions[] = 'created_at >= '.$this->params['start'];
+		}
+		
+		if( $this->params['end'] ) {
+			$conditions[] = 'created_at <= '.$this->params['end'];
 		}
 
 		$items = wfGetDB(DB_SLAVE)->select(
@@ -75,8 +79,12 @@ class MetricaStatAPI extends ApiBase {
 			'action' => 'edit'
 		);
 		
-		if( $this->params['range_unix'] ) {
-			$conditions[] = 'created_at <= '.$this->params['range_unix'];
+		if( $this->params['start'] ) {
+			$conditions[] = 'created_at >= '.$this->params['start'];
+		}
+		
+		if( $this->params['end'] ) {
+			$conditions[] = 'created_at <= '.$this->params['end'];
 		}
 
 		$items = wfGetDB(DB_SLAVE)->select(
@@ -113,16 +121,23 @@ class MetricaStatAPI extends ApiBase {
 			'action' => 'view'
 		);
 
-		$lowDate = new DateTime();
-
-		if( $this->params['range_unix'] ) {
-			$lowDate->setTimestamp( (int)$this->params['range_unix'] );
-			$conditions[] = 'created_at <= '. (int)$this->params['range_unix'];
-		}else {
+		if( $this->params['start'] || $this->params['end'] ) {
+			
+			if( $this->params['start'] ) {
+				$conditions[] = 'created_at >= '.$this->params['start'];
+			}
+			
+			if( $this->params['end'] ) {
+				$conditions[] = 'created_at <= '.$this->params['end'];
+			}
+			
+		}else{
+			
+			$lowDate = new DateTime();
 			$lowDate = $lowDate->sub( new DateInterval( "P7D" ) );
+			$conditions[] = 'created_at >= '.$lowDate->getTimestamp();
+		
 		}
-
-		$conditions[] = 'created_at >= '.$lowDate->getTimestamp();
 
 		$items = wfGetDB(DB_SLAVE)->select(
 			'metrica',
@@ -153,17 +168,33 @@ class MetricaStatAPI extends ApiBase {
 	private function pageEdits() {
 
 		$data = array();
+		
+		$conditions = array(
+			'action' => 'edit'
+		);
 
-		$lowDate = new DateTime();
-		$lowDate = $lowDate->sub( new DateInterval("P7D") );
+		if( $this->params['start'] || $this->params['end'] ) {
+			
+			if( $this->params['start'] ) {
+				$conditions[] = 'created_at >= '.$this->params['start'];
+			}
+			
+			if( $this->params['end'] ) {
+				$conditions[] = 'created_at <= '.$this->params['end'];
+			}
+			
+		}else{
+			
+			$lowDate = new DateTime();
+			$lowDate = $lowDate->sub( new DateInterval( "P7D" ) );
+			$conditions[] = 'created_at >= '.$lowDate->getTimestamp();
+		
+		}
 
 		$items = wfGetDB(DB_SLAVE)->select(
 			'metrica',
 			'COUNT(*) as `count`, DATE_FORMAT(created_at_date, "%e %M") as `date`',
-			array(
-				'action' => 'edit',
-				'created_at >= '.$lowDate->getTimestamp()
-			),
+			$conditions,
 			__METHOD__,
 			array(
 				'GROUP BY' => 'DAY(created_at_date)'
@@ -192,7 +223,11 @@ class MetricaStatAPI extends ApiBase {
 				ApiBase::PARAM_REQUIRED => true,
 				ApiBase::PARAM_TYPE => 'string'
 			),
-			'range_unix' => array(
+			'start' => array(
+				ApiBase::PARAM_REQUIRED => false,
+				ApiBase::PARAM_TYPE => 'integer'
+			),
+			'end' => array(
 				ApiBase::PARAM_REQUIRED => false,
 				ApiBase::PARAM_TYPE => 'integer'
 			)

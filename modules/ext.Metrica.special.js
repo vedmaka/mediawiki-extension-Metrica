@@ -7,21 +7,45 @@ $(function(){
 
     var apiUrl = mw.config.get('wgServer') + mw.config.get('wgScriptPath') + '/api.php?action=metricastat&format=json';
     
-    var viewsChart, editsChart, rangeUnix;
+    var viewsChart, editsChart, tsStart, tsEnd;
+    var inputDateStart = $('#start_date');
+    var inputDateEnd = $('#end_date');
 
-    var pik = new Pikaday({
-        field: $('#pik_field').get(0),
-        bound: false,
-        container: $('#pik').get(0),
-        onSelect: function(date) {
-            $('#pik_field').val( pik.toString() );
-            var date = pik.getDate();
-            var unix = date.getTime() / 1000;
-            console.log(unix);
-            rangeUnix = unix;
-            redrawStatistics();
-        },
-        numberOfMonths: 3
+    var pikStart = new Pikaday({
+        field: inputDateStart.get(0),
+        maxDate: moment().subtract(1,'d').toDate()
+    });
+    
+    var pikEnd = new Pikaday({
+        field: inputDateEnd.get(0),
+        maxDate: moment().toDate()
+    });
+    
+    $('#btn_date').click(function(){
+        if( !inputDateEnd.val() && !inputDateStart.val() ) {
+            alert('Please select dates range!');
+            return false;
+        }
+        
+        if( inputDateStart.val() ) {
+            var startDate = pikStart.getMoment();
+            tsStart = startDate.startOf('day').utc().unix();
+        }
+        
+        if( inputDateEnd.val() ) {
+            var endDate = pikEnd.getMoment();
+            tsEnd = endDate.endOf('day').add(2,'h').utc().unix();
+        }
+        
+        redrawStatistics();
+    });
+    
+    $('#btn_date_clear').click(function(){
+       inputDateStart.val('');
+       inputDateEnd.val('');
+       tsStart = null;
+       tsEnd = null;
+       redrawStatistics();
     });
     
     // A bit of refactoring
@@ -33,8 +57,21 @@ $(function(){
         drawEditsList();
     }
     
+    function getTsString() {
+        var str = '';
+        if( tsEnd || tsStart ) {
+            if( tsStart ) {
+                str += '&start=' + tsStart
+            }
+            if( tsEnd ) {
+                str += '&end=' + tsEnd
+            }
+        }
+        return str;
+    }
+    
     function drawViewsGraph() {
-        $.get( apiUrl + '&do=page_views' + (rangeUnix ? '&range_unix=' + rangeUnix : '') , function(response){
+        $.get( apiUrl + '&do=page_views' + getTsString() , function(response){
 
         var graphData = response.metricastat[0];
 
@@ -97,7 +134,7 @@ $(function(){
     }
     
     function drawEditsGraph() {
-        $.get( apiUrl + '&do=page_edits' + (rangeUnix ? '&range_unix=' + rangeUnix : ''), function(response){
+        $.get( apiUrl + '&do=page_edits' + getTsString(), function(response){
 
         var graphData = response.metricastat[0];
 
@@ -122,8 +159,10 @@ $(function(){
 
         };
         if( editsChart ) {
-            editsChart.data = lineChartData;
+            editsChart.data.datasets[0] = lineChartData.datasets[0];
+            editsChart.data.labels = lineChartData.labels;
             editsChart.update();
+            editsChart.render();
         }else{
             editsChart = new Chart(editsChartElement, {
                 type: 'line',
@@ -159,7 +198,7 @@ $(function(){
     }
     
     function drawViewsList() {
-        $.get( apiUrl + '&do=page_most_viewed' + (rangeUnix ? '&range_unix=' + rangeUnix : ''), function(response){
+        $.get( apiUrl + '&do=page_most_viewed' + getTsString(), function(response){
 
             var graphData = response.metricastat[0];
     
@@ -187,7 +226,7 @@ $(function(){
     }
     
     function drawEditsList() {
-        $.get( apiUrl + '&do=page_most_edited' + (rangeUnix ? '&range_unix=' + rangeUnix : ''), function(response){
+        $.get( apiUrl + '&do=page_most_edited' + getTsString(), function(response){
 
             var graphData = response.metricastat[0];
     
