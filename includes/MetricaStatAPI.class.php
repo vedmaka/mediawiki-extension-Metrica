@@ -46,7 +46,7 @@ class MetricaStatAPI extends ApiBase {
 		}
 
 		if( $this->params['exclude'] ) {
-			$conditions[] = 'user_id NOT IN( SELECT user_id FROM '.wfGetDB(DB_SLAVE)->tablePrefix().'user_groups ug WHERE ug.ug_group = "sysop" )';
+			$conditions[] = 'user_id NOT IN( SELECT ug_user FROM '.wfGetDB(DB_SLAVE)->tablePrefix().'user_groups ug WHERE ug.ug_group = "sysop" )';
 		}
 
 		$items = wfGetDB(DB_SLAVE)->select(
@@ -92,7 +92,7 @@ class MetricaStatAPI extends ApiBase {
 		}
 
 		if( $this->params['exclude'] ) {
-			$conditions[] = 'user_id NOT IN( SELECT user_id FROM '.wfGetDB(DB_SLAVE)->tablePrefix().'user_groups ug WHERE ug.ug_group = "sysop" )';
+			$conditions[] = 'user_id NOT IN( SELECT ug_user FROM '.wfGetDB(DB_SLAVE)->tablePrefix().'user_groups ug WHERE ug.ug_group = "sysop" )';
 		}
 
 		$items = wfGetDB(DB_SLAVE)->select(
@@ -148,7 +148,7 @@ class MetricaStatAPI extends ApiBase {
 		}
 
 		if( $this->params['exclude'] ) {
-			$conditions[] = 'user_id NOT IN( SELECT user_id FROM '.wfGetDB(DB_SLAVE)->tablePrefix().'user_groups ug WHERE ug.ug_group = "sysop" )';
+			$conditions[] = 'user_id NOT IN( SELECT ug_user FROM '.wfGetDB(DB_SLAVE)->tablePrefix().'user_groups ug WHERE ug.ug_group = "sysop" )';
 		}
 
 		$items = wfGetDB(DB_SLAVE)->select(
@@ -204,7 +204,7 @@ class MetricaStatAPI extends ApiBase {
 		}
 
 		if( $this->params['exclude'] ) {
-			$conditions[] = 'user_id NOT IN( SELECT user_id FROM '.wfGetDB(DB_SLAVE)->tablePrefix().'user_groups ug WHERE ug.ug_group = "sysop" )';
+			$conditions[] = 'user_id NOT IN( SELECT ug_user FROM '.wfGetDB(DB_SLAVE)->tablePrefix().'user_groups ug WHERE ug.ug_group = "sysop" )';
 		}
 
 		$items = wfGetDB(DB_SLAVE)->select(
