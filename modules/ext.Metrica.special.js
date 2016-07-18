@@ -134,6 +134,11 @@ $(function(){
                                 stepSize: 1*/
                             }
                         }]
+                    },
+                    elements: {
+                        line: {
+                            capBezierPoints: true
+                        }
                     }
                 }
             });
