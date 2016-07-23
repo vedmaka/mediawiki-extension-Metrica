@@ -45,10 +45,10 @@ class MetricaStatAPI extends ApiBase {
 		$sqlWhere = "";
 		$nextPrefix = "WHERE";
 
-		$date = time() - ( 60 * 60 * 24 * 7 );
+		/*$date = time() - ( 60 * 60 * 24 * 7 );
 		$dateString = $dbr->timestamp( $date );
 		$sqlWhere .= " {$nextPrefix} rev_timestamp > '$dateString'";
-		$nextPrefix = "AND";
+		$nextPrefix = "AND";*/
 
 		$sqlWhere .= " {$nextPrefix} rev_user NOT IN (SELECT ipb_user FROM {$ipBlocksTable} WHERE ipb_user <> 0)";
 		$nextPrefix = "AND";
@@ -72,6 +72,11 @@ class MetricaStatAPI extends ApiBase {
 						 ORDER BY rev_count DESC
 						 LIMIT 30";
 
+		$excludeSql = '';
+		if( $this->params['exclude'] ) {
+			$excludeSql = "WHERE user_id NOT IN (SELECT ug_user FROM user_groups WHERE ug_group = 'sysop')"; // no sysops
+		}
+
 		$sql = "SELECT user_id, " .
 		       "user_name, " .
 		       "user_real_name, " .
@@ -79,6 +84,7 @@ class MetricaStatAPI extends ApiBase {
 		       "rev_count, " .
 		       "page_count+SQRT(rev_count-page_count)*2 AS wiki_rank " .
 		       "FROM $userTable u JOIN (($sqlMostPages) UNION ($sqlMostRevs)) s ON (user_id=rev_user) " .
+		       $excludeSql .
 		       "ORDER BY wiki_rank DESC " .
 		       "LIMIT 30";
 
@@ -86,6 +92,7 @@ class MetricaStatAPI extends ApiBase {
 		$altrow = '';
 		$user_rank = 1;
 		$lang = $this->getLanguage();
+
 
 		while ( $row = $res->fetchObject() ) {
 
@@ -96,11 +103,12 @@ class MetricaStatAPI extends ApiBase {
 
 			$data[] = array(
 				'user_id' => $row->user_id,
-				'user_name' => $row->user_real_name ? $row->user_real_name : $row->user_name,
+				'user_name' => $row->user_name .' '. $row->user_real_name,
 				'rank' => $rank,
 				'score' => $score,
 				'pages' => $pages,
-				'changes' => $changes
+				'changes' => $changes,
+				'user_link' => User::newFromId( $row->user_id )->getUserPage()->getFullURL()
 			);
 
 			$user_rank++;

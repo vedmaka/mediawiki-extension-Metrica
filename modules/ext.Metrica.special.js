@@ -273,7 +273,7 @@ $(function(){
     }
 
     function drawContributionScores() {
-        $.get( apiUrl + '&do=contribution_scores', function(response) ) {
+        $.get( apiUrl + '&do=contribution_scores' + getTsString(), function(response) {
 
             var graphData = response.metricastat[0];
 
@@ -286,10 +286,15 @@ $(function(){
 
             $.each(graphData, function(i, v){
                 var $tr = $('<tr />');
-                //$tr.append( $('<td>'+  +'</td>') );
+                $tr.append( $('<td>'+ v.rank +'</td>') );
+                $tr.append( $('<td>'+ v.score +'</td>') );
+                $tr.append( $('<td>'+ v.pages +'</td>') );
+                $tr.append( $('<td>'+ v.changes +'</td>') );
+                $tr.append( $('<td><a href="'+ v.user_link +'">'+ v.user_name +'</a></td>') );
+                $container.append( $tr );
             });
 
-        }
+        });
     }
     
     redrawStatistics();
