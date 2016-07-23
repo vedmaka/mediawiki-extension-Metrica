@@ -149,7 +149,8 @@ class MetricaStatAPI extends ApiBase {
 			__METHOD__,
 			array(
 				'GROUP BY' => 'page_id',
-				'ORDER BY' => '`count` DESC'
+				'ORDER BY' => '`count` DESC',
+				'LIMIT' => 30
 			)
 		);
 
@@ -205,7 +206,8 @@ class MetricaStatAPI extends ApiBase {
 			__METHOD__,
 			array(
 				'GROUP BY' => 'page_id',
-				'ORDER BY' => '`count` DESC'
+				'ORDER BY' => '`count` DESC',
+				'LIMIT' => 30
 			)
 		);
 
