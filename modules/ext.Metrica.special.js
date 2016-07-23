@@ -60,6 +60,7 @@ $(function(){
         drawEditsGraph();
         drawViewsList();
         drawEditsList();
+        drawContributionScores();
     }
     
     function getTsString() {
@@ -134,12 +135,12 @@ $(function(){
                                 stepSize: 1*/
                             }
                         }]
-                    },
+                    }/*,
                     elements: {
                         line: {
                             capBezierPoints: true
                         }
-                    }
+                    }*/
                 }
             });
         }
@@ -220,21 +221,24 @@ $(function(){
             }
     
             var $container = $('#most-viewed-pages');
-            var $ul = $('<ul/>');
-    
-            $.each(graphData, function(i,v){
-                var $li = $('<li/>');
-                var $span = $('<span/>');
-                $span.addClass('badge').addClass('badge-primary');
-                $span.html( v.views );
-                $li.html( v.link );
-                $li.append( $span );
-                $ul.append( $li );
-            });
-    
+
             $container.html('');
-            $container.append( $ul );
     
+            $.each(graphData, function(categoryName,items){
+                $container.append( $('<span class="metrica-i-category-name">'+categoryName+'</span>') );
+                var $ul = $('<ul/>');
+                $.each(items, function(i, v) {
+                    var $li = $('<li/>');
+                    var $span = $('<span/>');
+                    $span.addClass('badge').addClass('badge-primary');
+                    $span.html( v.views );
+                    $li.html( v.link );
+                    $li.append( $span );
+                    $ul.append( $li );
+                });
+                $container.append( $ul );
+            });
+
         });
     }
     
@@ -248,22 +252,44 @@ $(function(){
             }
     
             var $container = $('#most-edited-pages');
-            var $ul = $('<ul/>');
-    
-            $.each(graphData, function(i,v){
-                var $li = $('<li/>');
-                var $span = $('<span/>');
-                $span.addClass('badge').addClass('badge-primary');
-                $span.html( v.edits );
-                $li.html( v.link );
-                $li.append( $span );
-                $ul.append( $li );
-            });
-    
             $container.html('');
-            $container.append( $ul );
+
+            $.each(graphData, function(categoryName,items){
+                $container.append( $('<span class="metrica-i-category-name">'+categoryName+'</span>') );
+                var $ul = $('<ul/>');
+                $.each(items, function(i, v) {
+                    var $li = $('<li/>');
+                    var $span = $('<span/>');
+                    $span.addClass('badge').addClass('badge-primary');
+                    $span.html( v.edits );
+                    $li.html( v.link );
+                    $li.append( $span );
+                    $ul.append( $li );
+                });
+                $container.append( $ul );
+            });
 
         });
+    }
+
+    function drawContributionScores() {
+        $.get( apiUrl + '&do=contribution_scores', function(response) ) {
+
+            var graphData = response.metricastat[0];
+
+            if( !graphData ) {
+                return true;
+            }
+
+            var $container = $('#contribution-scores-panel table tbody');
+            $container.html('');
+
+            $.each(graphData, function(i, v){
+                var $tr = $('<tr />');
+                //$tr.append( $('<td>'+  +'</td>') );
+            });
+
+        }
     }
     
     redrawStatistics();
