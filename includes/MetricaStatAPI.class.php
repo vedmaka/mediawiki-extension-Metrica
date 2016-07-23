@@ -150,7 +150,7 @@ class MetricaStatAPI extends ApiBase {
 			array(
 				'GROUP BY' => 'page_id',
 				'ORDER BY' => '`count` DESC',
-				'LIMIT' => 30
+				'LIMIT' => 15
 			)
 		);
 
