@@ -29,3 +29,8 @@
 .metrica-d-inputs {
     margin-bottom: 15px;
 }
+
+.metrica-i-category-name {
+    padding: 0 0 10px 10px;
+    font-weight: bold;
+}
